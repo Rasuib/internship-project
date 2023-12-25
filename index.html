@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<!DOCTYPE html>
 <html>
   <head>
     <title>Clean Map</title>
@@ -16,44 +17,69 @@
         padding: 0;
       }
 
+      .top-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .logo {
+        width: 60px;
+        height: auto;
+      }
+
+      .button-container {
+        display: flex;
+        align-items: center;
+        margin-right: -10px;
+      }
+
+      .site-button {
+        padding: 8px 16px;
+        margin-left: 8px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+
+      .site-button:hover {
+        background-color: #0056b3;
+      }
+
+      .site-button + .site-button {
+        margin-left: 16px;
+      }
+
       .container {
         text-align: center;
-        padding: 40px;
-        border-radius: 8px;
+        padding: 20px;
+        border-radius: 0 0 8px 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         background-color: white;
         max-width: 600px;
         margin: auto;
-      }
-
-      .header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 20px;
-      }
-
-      .logo {
-        width: 80px;
-        height: auto;
-        margin-right: 20px;
+        margin-top: 0;
+        margin-bottom: 40px;
       }
 
       h1 {
         margin: 0;
         color: #333;
-      }
-
-      p {
-        color: #666;
-        margin-bottom: 30px;
+        line-height: 1.5;
       }
 
       #map {
-        width: 100%;
-        height: calc(
-          100vh - 280px
-        ); /* Adjust height to take up remaining space */
+        width: calc(100% - 40px); /* Increased width */
+        height: calc(100vh - 280px);
         border-radius: 8px;
         margin-bottom: 20px;
       }
@@ -75,11 +101,16 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <img src="logo.png" alt="Logo" class="logo" />
-        <h1>Welcome to the Clean Map!</h1>
+    <div class="top-section">
+      <img src="logo.png" alt="Logo" class="logo" />
+      <div class="button-container">
+        <a href="about.html" target="_blank" class="site-button">About</a>
+        <a href="purpose.html" target="_blank" class="site-button">Purpose</a>
       </div>
+    </div>
+
+    <div class="container">
+      <h1>Welcome to the Clean Map!</h1>
       <p>Click on the map to add a marker on the location of garbage.</p>
       <div id="map"></div>
       <br />
@@ -101,13 +132,21 @@
           maxZoom: 18,
         }).addTo(map);
 
+        var geocoder = L.Control.geocoder({
+          defaultMarkGeocode: false,
+        })
+          .on("markgeocode", function (e) {
+            map.setView(e.geocode.center, 13);
+            addMarker(e.geocode.center);
+            saveMarkers();
+          })
+          .addTo(map);
+
         map.on("click", function (e) {
           var location = e.latlng;
           addMarker(location);
           saveMarkers();
         });
-
-        L.Control.geocoder().addTo(map); // Adding geocoder control for search
 
         loadMarkers();
       }
@@ -161,7 +200,10 @@
         }
       }
 
-      window.onload = loadMapScenario;
+      window.onload = function () {
+        loadMapScenario();
+      };
     </script>
   </body>
 </html>
+
